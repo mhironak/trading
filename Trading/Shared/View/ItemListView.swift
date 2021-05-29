@@ -7,31 +7,23 @@
 
 import SwiftUI
 
-enum ItemList: CaseIterable {
-    case stocksList, autoTrading
-    
-    var title: String {
-        switch self {
-        case .stocksList: return "Stocks List"
-        case .autoTrading: return "Auto Trading"
-        }
-    }
-    
-//    var view: View {
-//        switch self {
-//        case .stocksList: return StocksListView()
-//        case .autoTrading: return AutoTradingView()
-//        }
-//    }
+struct Item<T: View> {
+    let title: String
+    let view: T
 }
 
 struct ItemListView: View {
     
+    let items = [
+        Item(title: "Stocks List", view: StocksListView(stocksList: StocksList())),
+        Item(title: "Auto Trading", view: StocksListView(stocksList: StocksList()))
+    ]
+
     var body: some View {
         NavigationView {
-            List(0..<ItemList.allCases.count) { localIndex in
-                NavigationLink(destination: StocksListView(stocksList: StocksList())) {
-                    Text("\(localIndex+1). \(ItemList.allCases[localIndex].title)")
+            List(0..<items.count) { localIndex in
+                NavigationLink(destination: items[localIndex].view) {
+                    Text("\(localIndex). \(items[localIndex].title)")
                 }
             }
             .navigationBarTitle("Item List")
